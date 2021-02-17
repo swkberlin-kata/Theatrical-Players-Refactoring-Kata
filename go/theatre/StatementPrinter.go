@@ -7,7 +7,6 @@ import (
 	"github.com/leekchan/accounting"
 )
 
-
 type StatementPrinter struct{}
 
 func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, error) {
@@ -15,12 +14,10 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	volumeCredits := 0
 	result := fmt.Sprintf("Statement for %s\n", invoice.Customer)
 
-	ac := accounting.Accounting{Symbol: "$", Precision: 2}
-
 	for _, perf := range invoice.Performances {
 		play := plays[perf.PlayID]
 
-		thisAmount, e := computePrice(play, perf)
+		thisAmount, e := computePrice(play.Type, perf)
 		if e != nil {
 			return "", e
 		}
@@ -33,18 +30,23 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 		}
 
 		// print line for this order
-		result += fmt.Sprintf("  %s: %s (%d seats)\n", play.Name, ac.FormatMoney(float64(thisAmount)/100), perf.Audience)
+		result += fmt.Sprintf("  %s: %s (%d seats)\n", play.Name, formatMoney(thisAmount), perf.Audience)
 		totalAmount += thisAmount
 	}
-	result += fmt.Sprintf("Amount owed is %s\n", ac.FormatMoney(float64(totalAmount)/100))
+	result += fmt.Sprintf("Amount owed is %s\n", formatMoney(totalAmount))
 	result += fmt.Sprintf("You earned %d credits\n", volumeCredits)
 	return result, nil
 }
 
-func computePrice(play Play, perf Performance) (int, error) {
+func formatMoney(totalAmount int) string {
+	ac2 := accounting.Accounting{Symbol: "$", Precision: 2}
+	return ac2.FormatMoney(float64(totalAmount) / 100)
+}
+
+func computePrice(playType string, perf Performance) (int, error) {
 	thisAmount := 0
 
-	switch play.Type {
+	switch playType {
 	case "tragedy":
 		thisAmount = 40000
 		if perf.Audience > 30 {
@@ -57,7 +59,7 @@ func computePrice(play Play, perf Performance) (int, error) {
 		}
 		thisAmount += 300 * perf.Audience
 	default:
-		return 0, fmt.Errorf("unknown type: %s", play.Type)
+		return 0, fmt.Errorf("unknown type: %s", playType)
 	}
 	return thisAmount, nil
 }
