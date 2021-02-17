@@ -33,12 +33,12 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	return result, nil
 }
 
-func computeVolume(Audience int, Type string) int {
+func computeVolume(audience int, Type string) int {
 	// add volume credits
-	volumeCredits := int(math.Max(float64(Audience)-30, 0))
+	volumeCredits := int(math.Max(float64(audience)-30, 0))
 	// add extra credit for every ten comedy attendees
 	if Type == "comedy" {
-		volumeCredits += int(math.Floor(float64(Audience) / 5))
+		volumeCredits += int(math.Floor(float64(audience) / 5))
 	}
 	return volumeCredits
 }
