@@ -20,7 +20,7 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	for _, perf := range invoice.Performances {
 		play := plays[perf.PlayID]
 
-		thisAmount, _, e := computePrice(play, perf)
+		thisAmount, e := computePrice(play, perf)
 		if e != nil {
 			return "", e
 		}
@@ -41,7 +41,7 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	return result, nil
 }
 
-func computePrice(play Play, perf Performance) (int, string, error) {
+func computePrice(play Play, perf Performance) (int, error) {
 	thisAmount := 0
 
 	switch play.Type {
@@ -57,7 +57,7 @@ func computePrice(play Play, perf Performance) (int, string, error) {
 		}
 		thisAmount += 300 * perf.Audience
 	default:
-		return 0, "", fmt.Errorf("unknown type: %s", play.Type)
+		return 0, fmt.Errorf("unknown type: %s", play.Type)
 	}
-	return thisAmount, "", nil
+	return thisAmount, nil
 }
