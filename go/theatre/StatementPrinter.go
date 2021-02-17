@@ -22,12 +22,7 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 			return "", e
 		}
 
-		// add volume credits
-		volumeCredits += int(math.Max(float64(perf.Audience)-30, 0))
-		// add extra credit for every ten comedy attendees
-		if play.Type == "comedy" {
-			volumeCredits += int(math.Floor(float64(perf.Audience) / 5))
-		}
+		volumeCredits += computeVolume(perf.Audience, play.Type)
 
 		// print line for this order
 		result += fmt.Sprintf("  %s: %s (%d seats)\n", play.Name, formatMoney(thisAmount), perf.Audience)
@@ -36,6 +31,16 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	result += fmt.Sprintf("Amount owed is %s\n", formatMoney(totalAmount))
 	result += fmt.Sprintf("You earned %d credits\n", volumeCredits)
 	return result, nil
+}
+
+func computeVolume(Audience int, Type string) int {
+	// add volume credits
+	volumeCredits := int(math.Max(float64(Audience)-30, 0))
+	// add extra credit for every ten comedy attendees
+	if Type == "comedy" {
+		volumeCredits += int(math.Floor(float64(Audience) / 5))
+	}
+	return volumeCredits
 }
 
 func formatMoney(totalAmount int) string {
