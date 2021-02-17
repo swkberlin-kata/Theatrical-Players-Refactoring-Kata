@@ -14,6 +14,8 @@ func (StatementPrinter) Print(invoice Invoice, plays map[string]Play) (string, e
 	volumeCredits := 0
 	result := fmt.Sprintf("Statement for %s\n", invoice.Customer)
 
+
+
 	for _, perf := range invoice.Performances {
 		play := plays[perf.PlayID]
 

@@ -14,3 +14,15 @@ type Invoice struct {
 	Customer     string
 	Performances []Performance
 }
+
+type ResultPerPerformance struct {
+	price float32;
+	playName string
+	playAudience int
+}
+
+type TotalResult struct {
+	customerName string
+	volumeCredits int
+	results [] ResultPerPerformance
+}
