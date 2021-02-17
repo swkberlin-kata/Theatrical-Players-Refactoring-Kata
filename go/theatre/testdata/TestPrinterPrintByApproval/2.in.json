@@ -1,0 +1,13 @@
+{
+  "plays": [
+    { "id": "as-like", "play": { "name": "As You Like It", "type": "comedy" } },
+    { "id": "hamlet", "play": { "name": "Hamlet", "type": "tragedy" } }
+    ],
+  "invoice": {
+    "customer": "HF",
+    "performances": [
+      {"playId": "as-like", "audience": 45 },
+      {"playId": "hamlet", "audience": 25 }
+    ]
+  }
+}
